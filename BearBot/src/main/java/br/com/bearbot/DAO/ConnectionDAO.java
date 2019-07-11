@@ -10,7 +10,7 @@ public class ConnectionDAO {
 	private final String user = "";
 	private final String password = "";
 	private Connection connection;
-
+//asdasd
 	public void connect() throws ClassNotFoundException, SQLException {
 
 		Class.forName(driver);
