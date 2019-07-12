@@ -28,7 +28,6 @@ public class TrackManager extends AudioEventAdapter {
 	private final AudioPlayer PLAYER;
 	private final Queue<AudioInfo> queue;
 	private Message msg;
-	
 
 	public TrackManager(AudioPlayer player) {
 		this.PLAYER = player;
@@ -82,18 +81,18 @@ public class TrackManager extends AudioEventAdapter {
 		} else {
 			info.getAuthor().getGuild().getAudioManager().openAudioConnection(vChan);
 		}
-		
 
 		EmbedBuilder nextMusic = new EmbedBuilder();
 		nextMusic.setTitle("🎶  Now playing :: " + player.getPlayingTrack().getInfo().title);
-		nextMusic.addField("Duration :: " , getTimestamp(player.getPlayingTrack().getDuration()) , false);
+		nextMusic.addField("Duration :: ", getTimestamp(player.getPlayingTrack().getDuration()), false);
 		nextMusic.setColor(Color.CYAN);
-		
+
 		long idMessage = msg.getChannel().sendMessage(nextMusic.build()).complete().getIdLong();
-		
+		msg.getTextChannel().getManager().setTopic("🎶  Now playing :: " + player.getPlayingTrack().getInfo().title)
+				.queue();
 		msg.getChannel().addReactionById(idMessage, "⏹").queue();
 		msg.getChannel().addReactionById(idMessage, "⏩").queue();
-		
+
 	}
 
 	@Override
@@ -101,12 +100,16 @@ public class TrackManager extends AudioEventAdapter {
 
 		Guild g = queue.poll().getAuthor().getGuild();
 
-		if (queue.isEmpty())
+		if (queue.isEmpty()) {
 			g.getAudioManager().closeAudioConnection();
-		else
+			msg.getTextChannel().getManager().setTopic("").queue();
+		} else {
 			player.playTrack(queue.element().getTrack());
+
+		}
+
 	}
-	
+
 	private String getTimestamp(long milis) {
 		long seconds = milis / 1000;
 		long hours = Math.floorDiv(seconds, 3600);

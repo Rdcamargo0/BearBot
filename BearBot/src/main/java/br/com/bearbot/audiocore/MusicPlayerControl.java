@@ -21,6 +21,7 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 
 public class MusicPlayerControl {
 	private static final int PLAYLIST_LIMIT = 1000;
@@ -154,6 +155,25 @@ public class MusicPlayerControl {
 		stopEmbed.setColor(Color.RED);
 		event.getChannel().sendMessage(stopEmbed.build()).complete();
 	}
+	
+	public void stopEmote(MessageReactionAddEvent event) {
+		Guild guildEvent = event.getGuild();
+
+		if (isIdle(guildEvent))
+			return;
+
+		getManager(guildEvent).purgeQueue();
+
+		skipMusic(guildEvent);
+		guildEvent.getAudioManager().closeAudioConnection();
+
+		EmbedBuilder stopEmbed = new EmbedBuilder();
+
+		stopEmbed.setTitle("🛑🛑 O bot foi parado !");
+		stopEmbed.setColor(Color.RED);
+		event.getChannel().sendMessage(stopEmbed.build()).complete();
+		
+	}
 
 	public void shuffle(MessageReceivedEvent event) {
 		Guild guildEvent = event.getGuild();
@@ -208,6 +228,16 @@ public class MusicPlayerControl {
 
 		skipMusic(guildEvent);
 	}
+	public void skipEmote(MessageReactionAddEvent event) {
+		Guild guildEvent = event.getGuild();
+
+		if (isIdle(guildEvent)) {
+			return;
+		}
+
+		skipMusic(guildEvent);
+		
+	}
 
 	public void info(MessageReceivedEvent event) {
 		Guild guildEvent = event.getGuild();
@@ -229,4 +259,8 @@ public class MusicPlayerControl {
 
 		event.getTextChannel().sendMessage(infoEmbed.build()).queue();
 	}
+
+	
+
+	
 }

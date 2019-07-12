@@ -1,5 +1,6 @@
 package br.com.bearbot.core;
 
+import br.com.bearbot.audiocore.MusicControl;
 import br.com.bearbot.commands.Commands;
 import br.com.bearbot.commands.OnPrivateMessageRecived;
 import br.com.bearbot.events.OnGuildJoinInNewServer;
@@ -28,6 +29,7 @@ public class BotStart {
 		bot.addEventListener(new LevelUpNotification());
 		bot.addEventListener(new OnGuildJoinInNewServer());
 		bot.addEventListener(new MessagesCounter());
+		bot.addEventListener(new MusicControl());
 		bot.addEventListener(new OnUserEnter());
 	}
 
