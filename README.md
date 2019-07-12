@@ -1,6 +1,10 @@
 # BearBot
 *VERSION ALPHA 1.0.0.6*<br />
 A bot for discord containing everything you see in need of a bot.
+
+## IDE
+*This project used the eclipse IDE for development.*
+
 ## Dependencies
 The bot use the maven repositories for download all dependencies.<br />
 But here are some links used in the project.
@@ -22,4 +26,16 @@ private final String driver = "com.mysql.jdbc.Driver";
 private final String user = "<USER>";
 private final String password = "<PASSWORD";
 private Connection connection;
+```
+
+## Token for yout bot
+* Create your token here [Discord Developer Portal](https://discordapp.com/developers) <br />
+
+*Class to change token*<br /> `BearBot/src/main/java/br/com/bearbot/utils/CONFIGS.java`
+
+```java
+public class CONFIGS {
+    public static String TOKEN = "<Token here>";
+    public static String PREFIX = "!bb";
+}
 ```
