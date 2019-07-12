@@ -1,5 +1,5 @@
 # BearBot
-*VERSION ALPHA 1.0.0.5*<br />
+*VERSION ALPHA 1.0.0.6*<br />
 A bot for discord containing everything you see in need of a bot.
 ## Dependencies
 The bot use the maven repositories for download all dependencies.<br />
