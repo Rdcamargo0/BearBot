@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
@@ -21,7 +20,6 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.VoiceChannel;
-import net.dv8tion.jda.core.exceptions.PermissionException;
 
 public class TrackManager extends AudioEventAdapter {
 
@@ -88,8 +86,8 @@ public class TrackManager extends AudioEventAdapter {
 		nextMusic.setColor(Color.CYAN);
 
 		long idMessage = msg.getChannel().sendMessage(nextMusic.build()).complete().getIdLong();
-		msg.getTextChannel().getManager().setTopic("🎶  Now playing :: " + player.getPlayingTrack().getInfo().title)
-				.queue();
+		msg.getTextChannel().getManager().setTopic("🎶  Now playing :: " + player.getPlayingTrack().getInfo().title).queue();
+		msg.getChannel().addReactionById(idMessage, "ℹ").queue();
 		msg.getChannel().addReactionById(idMessage, "⏹").queue();
 		msg.getChannel().addReactionById(idMessage, "⏩").queue();
 
@@ -97,17 +95,14 @@ public class TrackManager extends AudioEventAdapter {
 
 	@Override
 	public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-
 		Guild g = queue.poll().getAuthor().getGuild();
-
+		
 		if (queue.isEmpty()) {
-			g.getAudioManager().closeAudioConnection();
 			msg.getTextChannel().getManager().setTopic("").queue();
+			g.getAudioManager().closeAudioConnection();
 		} else {
 			player.playTrack(queue.element().getTrack());
-
 		}
-
 	}
 
 	private String getTimestamp(long milis) {

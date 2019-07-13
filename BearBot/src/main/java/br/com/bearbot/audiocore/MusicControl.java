@@ -12,13 +12,15 @@ public class MusicControl extends ListenerAdapter{
 		
 		if(!(event.getMember().getUser().equals(event.getJDA().getSelfUser())) && event.getReactionEmote().getName().equals("⏹")) {
 			musicController.stopEmote(event);
-		
-	
 			event.getChannel().deleteMessageById(event.getMessageIdLong()).queue();
 			
 		}
 		if(!(event.getMember().getUser().equals(event.getJDA().getSelfUser())) && event.getReactionEmote().getName().equals("⏩")) {
 			musicController.skipEmote(event);
+			event.getChannel().deleteMessageById(event.getMessageIdLong()).queue();
+		}
+		if(!(event.getMember().getUser().equals(event.getJDA().getSelfUser())) && event.getReactionEmote().getName().equals("ℹ")) {
+			musicController.infoEmote(event);
 			event.getChannel().deleteMessageById(event.getMessageIdLong()).queue();
 		}
 

@@ -5,6 +5,7 @@ import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
@@ -16,6 +17,8 @@ import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 
+import br.com.bearbot.beans.Server;
+import br.com.bearbot.utils.STATICS;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -29,6 +32,7 @@ public class MusicPlayerControl {
 	private static final AudioPlayerManager MANAGER = new DefaultAudioPlayerManager();
 	private static final Map<Guild, Map.Entry<AudioPlayer, TrackManager>> PLAYERS = new HashMap<>();
 	private boolean isPlaylist;
+	private int selected;
 
 	public MusicPlayerControl() {
 		AudioSourceManagers.registerRemoteSources(MANAGER);
@@ -78,22 +82,80 @@ public class MusicPlayerControl {
 			}
 
 			@Override
-			public void playlistLoaded(AudioPlaylist playlist) {
+			public void playlistLoaded(final AudioPlaylist playlist) {
 				int musicsQnt = 0;
+				final EmbedBuilder addNew = new EmbedBuilder();
 				if (isPlaylist) {
 					for (int i = 0; i < (playlist.getTracks().size() > PLAYLIST_LIMIT ? PLAYLIST_LIMIT
 							: playlist.getTracks().size()); i++) {
 						getManager(guild).queue(playlist.getTracks().get(i), author, msg);
 						musicsQnt = i;
+						addNew.setTitle("🎶 Musicas adicionadas: " + musicsQnt);
 					}
 				} else {
 					musicsQnt = 1;
-					getManager(guild).queue(playlist.getTracks().get(0), author, msg);
+					EmbedBuilder nextMusic = new EmbedBuilder();
+
+					nextMusic.addField("🌓  " + playlist.getTracks().get(0).getInfo().title,  "", false);
+					nextMusic.addField("🌔  " + playlist.getTracks().get(1).getInfo().title, "", false);
+					nextMusic.addField("🌕  " + playlist.getTracks().get(2).getInfo().title,  "", false);
+					nextMusic.addField("🌖  " + playlist.getTracks().get(3).getInfo().title, "", false);
+					nextMusic.setColor(Color.CYAN);
+					long idMessage = msg.getChannel().sendMessage(nextMusic.build()).complete().getIdLong();
+					msg.getChannel().addReactionById(idMessage, "🌓").queue();
+					msg.getChannel().addReactionById(idMessage, "🌔").queue();
+					msg.getChannel().addReactionById(idMessage, "🌕").queue();
+					msg.getChannel().addReactionById(idMessage, "🌖").queue();
+					
+					new Thread() {
+						@Override
+						public void run() {
+							
+							Server a = STATICS.GUILDS.get(msg.getGuild());
+							a.setMusicOption(0);
+							SelectMusic musicSelector = new SelectMusic(a);
+
+							for (int i = 0; i < 10000; i++) {
+								try {
+									TimeUnit.MILLISECONDS.sleep(1);
+									if (musicSelector.getValue(a) == 1) {
+										getManager(guild).queue(playlist.getTracks().get(0), author, msg);
+										msg.getChannel().sendMessage("Music selected: " + playlist.getTracks().get(0).getInfo().title).queue();
+										interrupt();
+										stop();
+										break;
+									} else if (musicSelector.getValue(a) == 2) {
+										getManager(guild).queue(playlist.getTracks().get(1), author, msg);
+										msg.getChannel().sendMessage("Music selected: " + playlist.getTracks().get(1).getInfo().title).queue();
+										interrupt();
+										stop();
+										break;
+									} else if (musicSelector.getValue(a) == 3) {
+										getManager(guild).queue(playlist.getTracks().get(2), author, msg);
+										msg.getChannel().sendMessage("Music selected: " + playlist.getTracks().get(2).getInfo().title).queue();
+										interrupt();
+										stop();
+										break;
+									} else if (musicSelector.getValue(a) == 4) {
+										getManager(guild).queue(playlist.getTracks().get(3), author, msg);
+										msg.getChannel().sendMessage("Music selected: " + playlist.getTracks().get(3).getInfo().title).queue();
+										interrupt();
+										stop();
+										break;
+									}
+								} catch (Exception e) {
+
+								}
+							}
+							System.out.println("Interruped");
+							getManager(guild).queue(playlist.getTracks().get(0), author, msg);
+							addNew.setTitle("🎶 Adicionado: " + playlist.getTracks().get(0).getInfo().title);
+							interrupt();
+						}
+					}.start();
+
 				}
-
-				EmbedBuilder addNew = new EmbedBuilder();
-
-				addNew.setTitle("🎶 Musicas adicionadas: " + musicsQnt);
+				
 				addNew.setColor(Color.GREEN);
 				msg.getChannel().sendMessage(addNew.build()).queue();
 			}
@@ -136,6 +198,8 @@ public class MusicPlayerControl {
 			this.isPlaylist = true;
 			loadTrack(input, event.getMember(), event.getMessage());
 		}
+
+		event.getMessage().delete().queue();
 	}
 
 	public void stop(MessageReceivedEvent event) {
@@ -153,9 +217,10 @@ public class MusicPlayerControl {
 
 		stopEmbed.setTitle("🛑🛑 O bot foi parado !");
 		stopEmbed.setColor(Color.RED);
+		event.getTextChannel().getManager().setTopic("").queue();
 		event.getChannel().sendMessage(stopEmbed.build()).complete();
 	}
-	
+
 	public void stopEmote(MessageReactionAddEvent event) {
 		Guild guildEvent = event.getGuild();
 
@@ -171,8 +236,9 @@ public class MusicPlayerControl {
 
 		stopEmbed.setTitle("🛑🛑 O bot foi parado !");
 		stopEmbed.setColor(Color.RED);
+		event.getTextChannel().getManager().setTopic("").queue();
 		event.getChannel().sendMessage(stopEmbed.build()).complete();
-		
+
 	}
 
 	public void shuffle(MessageReceivedEvent event) {
@@ -205,7 +271,7 @@ public class MusicPlayerControl {
 		int b = 0;
 		for (AudioInfo audioInfo : a) {
 
-			queueList += (audioInfo.getTrack().getInfo().title + "\n");
+			queueList += (b + "." + audioInfo.getTrack().getInfo().title + "\n");
 			b++;
 			if (b == 20) {
 				break;
@@ -228,6 +294,7 @@ public class MusicPlayerControl {
 
 		skipMusic(guildEvent);
 	}
+
 	public void skipEmote(MessageReactionAddEvent event) {
 		Guild guildEvent = event.getGuild();
 
@@ -236,7 +303,7 @@ public class MusicPlayerControl {
 		}
 
 		skipMusic(guildEvent);
-		
+
 	}
 
 	public void info(MessageReceivedEvent event) {
@@ -257,10 +324,35 @@ public class MusicPlayerControl {
 		infoEmbed.addField("Author", info.author, false).build();
 		infoEmbed.setColor(Color.YELLOW);
 
-		event.getTextChannel().sendMessage(infoEmbed.build()).queue();
+		long idMessage = event.getTextChannel().sendMessage(infoEmbed.build()).complete().getIdLong();
+		event.getChannel().addReactionById(idMessage, "ℹ").queue();
+		event.getChannel().addReactionById(idMessage, "⏹").queue();
+		event.getChannel().addReactionById(idMessage, "⏩").queue();
 	}
 
-	
+	public void infoEmote(MessageReactionAddEvent event) {
+		Guild guildEvent = event.getGuild();
 
-	
+		if (isIdle(guildEvent)) {
+			System.out.println("Nao ta tocando nada man");
+			return;
+		}
+
+		AudioTrack track = getPlayer(guildEvent).getPlayingTrack();
+		AudioTrackInfo info = track.getInfo();
+
+		EmbedBuilder infoEmbed = new EmbedBuilder().setDescription("**CURRENT TRACK INFO:**");
+		infoEmbed.addField("Title", info.title, false);
+		infoEmbed.addField("Duration",
+				"`[ " + getTimestamp(track.getPosition()) + "/ " + getTimestamp(track.getDuration()) + " ]`", false);
+		infoEmbed.addField("Author", info.author, false).build();
+		infoEmbed.setColor(Color.YELLOW);
+
+		long idMessage = event.getTextChannel().sendMessage(infoEmbed.build()).complete().getIdLong();
+		event.getChannel().addReactionById(idMessage, "ℹ").queue();
+		event.getChannel().addReactionById(idMessage, "⏹").queue();
+		event.getChannel().addReactionById(idMessage, "⏩").queue();
+
+	}
+
 }

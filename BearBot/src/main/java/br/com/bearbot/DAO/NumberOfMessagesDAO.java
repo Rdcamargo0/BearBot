@@ -27,10 +27,18 @@ public class NumberOfMessagesDAO {
 			while (results.next()) {
 				msgs = results.getInt("msg_counter");
 			}
-			connection.disconnect();
+			
+			
+			
+			
 		} catch (Exception e) {
 		}
 
+		try {
+			connection.disconnect();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 
 		return msgs;
 	}

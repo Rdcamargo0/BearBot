@@ -26,14 +26,19 @@ public class MusicCommands {
 		
 		music = music.trim();
 		MusicPlayerControl musicController = new MusicPlayerControl();
-		
+
 		if((args[2].equals("play") || args[2].equals("p")) && args.length >= 3)  musicController.play(event, music);
 		if((args[2].equals("skip") || args[2].equals("s")) && args.length >= 3)  musicController.skip(event);
-		if((args[2].equals("info") || args[2].equals("now"))&& args.length >= 3)  musicController.info(event);
-		if((args[2].equals("queue") || args[2].equals("now"))&& args.length >= 3)  musicController.queue(event);
+		if((args[2].equals("info") || args[2].equals("now")) && args.length >= 3)  musicController.info(event);
+		if((args[2].equals("queue") || args[2].equals("q")) && args.length >= 3)  musicController.queue(event);
 		if((args[2].equals("monstercat") || args[2].equals("mc"))&& args.length >= 3)  musicController.play(event, "https://www.twitch.tv/monstercat");
+		if(args[2].equals("list1") && args.length >= 3)  musicController.play(event, "https://www.youtube.com/watch?v=Pkh8UtuejGw&list=PLx0sYbCqOb8TBPRdmBHs5Iftvv9TPboYG");
 		if(args[2].equals("stop") && args.length >= 3)  musicController.stop(event);
 		if(args[2].equals("shuffle") && args.length >= 3)  musicController.shuffle(event);
+	
+		
+		
+		
 		
 	}
 

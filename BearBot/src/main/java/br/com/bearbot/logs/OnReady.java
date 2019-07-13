@@ -1,9 +1,12 @@
 package br.com.bearbot.logs;
 
+import java.util.HashMap;
 import java.util.List;
 
 import br.com.bearbot.DAO.AddNewGuildDAO;
 import br.com.bearbot.DAO.VerifyExistenceDAO;
+import br.com.bearbot.beans.Server;
+import br.com.bearbot.utils.STATICS;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.events.DisconnectEvent;
 import net.dv8tion.jda.core.events.ReadyEvent;
@@ -12,10 +15,15 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 public class OnReady extends ListenerAdapter {
 
 	public void onReady(ReadyEvent event) {
-
+		
+		
+		STATICS.GUILDS = new HashMap<Guild, Server>();
 		List<Guild> guildsList = event.getJDA().getGuilds();
 
+		
 		for (Guild guild : guildsList) {
+			Server server = new Server();
+			STATICS.GUILDS.put(guild, server);
 			VerifyExistenceDAO ver = new VerifyExistenceDAO();
 			if (ver.checkExistence(guild.getIdLong())) {
 			} else {

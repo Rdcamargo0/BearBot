@@ -18,7 +18,7 @@ public class CommandHelp {
 		configHelp.setColor(Color.BLUE);
 		configHelp.setDescription("__***Type !bb <command>***__");
 		
-		configHelp.addField("***SCREENSHARE***", "!bb sharescreen **To share screen on server**", false);
+		configHelp.addField("***SHARESCREEN***", "!bb sharescreen **To share screen on server**", false);
 		configHelp.addField("***RANK***", "!bb rank **To view your rank on the server**", false);
 		configHelp.addField("***MUSIC PLAY***", "!bb music play <link/name of music> **To play a new music**", false);
 		configHelp.addField("***MUSIC STOP***", "!bb music stop **To stop the music**", false);
@@ -26,8 +26,6 @@ public class CommandHelp {
 		configHelp.addField("***MUSIC SHUFFLE***", "!bb music shuffle **To shuffle the playlist**", false);
 		configHelp.addField("***MUSIC QUEUE***", "!bb music queue **To view music queue**", false);
 		
-		
-		//teste
 		
 		if (event.isFromType(ChannelType.PRIVATE) && !event.getAuthor().isBot()) return;
 

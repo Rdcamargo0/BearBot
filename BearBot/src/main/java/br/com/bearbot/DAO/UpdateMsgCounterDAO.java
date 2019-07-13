@@ -14,7 +14,7 @@ public class UpdateMsgCounterDAO {
 			PreparedStatement preparedStmt = connection.db().prepareStatement(query);
 
 			preparedStmt.executeUpdate();
-
+		
 			connection.disconnect();
 		} catch (Exception e) {
 			e.printStackTrace();
