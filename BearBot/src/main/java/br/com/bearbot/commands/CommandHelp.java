@@ -29,7 +29,8 @@ public class CommandHelp {
 		
 		if (event.isFromType(ChannelType.PRIVATE) && !event.getAuthor().isBot()) return;
 
-		event.getChannel().sendMessage("Enviado para seu privado").queue();
+		event.getChannel().sendMessage("👽 Enviado para seu privado").queue();
+		
 		sendPrivateMessage(event.getAuthor() , configHelp.build());
 	}
 

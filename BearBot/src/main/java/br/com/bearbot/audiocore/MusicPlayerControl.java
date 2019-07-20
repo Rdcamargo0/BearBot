@@ -18,7 +18,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackInfo;
 
 import br.com.bearbot.beans.Server;
-import br.com.bearbot.utils.STATICS;
+import br.com.bearbot.utils.UTILS;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -28,30 +28,33 @@ import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 
 public class MusicPlayerControl {
 	private static final int PLAYLIST_LIMIT = 1000;
-	private static Guild guild;
 	private static final AudioPlayerManager MANAGER = new DefaultAudioPlayerManager();
 	private static final Map<Guild, Map.Entry<AudioPlayer, TrackManager>> PLAYERS = new HashMap<>();
+	private static Guild guild;
 	private boolean isPlaylist;
-	private int selected;
 
 	public MusicPlayerControl() {
 		AudioSourceManagers.registerRemoteSources(MANAGER);
 	}
 
+	
+	// Cria um player para o guild
 	private AudioPlayer createPlayer(Guild g) {
 		AudioPlayer audioPlayer = MANAGER.createPlayer();
 		TrackManager trackManager = new TrackManager(audioPlayer);
 		audioPlayer.addListener(trackManager);
 		guild.getAudioManager().setSendingHandler(new PlayerSendHandler(audioPlayer));
-		PLAYERS.put(g, new AbstractMap.SimpleEntry<>(audioPlayer, trackManager));
+		PLAYERS.put(g, new AbstractMap.SimpleEntry<AudioPlayer , TrackManager>(audioPlayer, trackManager));
 
 		return audioPlayer;
 	}
 
+	// Verifica se existe um play no guild
 	private boolean hasPlayer(Guild g) {
 		return PLAYERS.containsKey(g);
 	}
 
+	// Pega o player 
 	private AudioPlayer getPlayer(Guild g) {
 		if (hasPlayer(g)) {
 			return PLAYERS.get(g).getKey();
@@ -60,14 +63,17 @@ public class MusicPlayerControl {
 		}
 	}
 
+	// Verifica se o bot esta tocando algo
+		private boolean isIdle(Guild g) {
+			return !hasPlayer(g) || getPlayer(g).getPlayingTrack() == null;
+		}
+	
 	private TrackManager getManager(Guild g) {
 		return PLAYERS.get(g).getValue();
 	}
 
-	private boolean isIdle(Guild g) {
-		return !hasPlayer(g) || getPlayer(g).getPlayingTrack() == null;
-	}
-
+	
+	// Carrega as musicas
 	private void loadTrack(String identifier, final Member author, final Message msg) {
 
 		final Guild guild = author.getGuild();
@@ -90,53 +96,63 @@ public class MusicPlayerControl {
 							: playlist.getTracks().size()); i++) {
 						getManager(guild).queue(playlist.getTracks().get(i), author, msg);
 						musicsQnt = i;
-						addNew.setTitle("🎶 Musicas adicionadas: " + musicsQnt);
 					}
+					addNew.setTitle("🎶 Musicas adicionadas: " + musicsQnt);
 				} else {
 					musicsQnt = 1;
-					EmbedBuilder nextMusic = new EmbedBuilder();
-
-					nextMusic.addField("🌓  " + playlist.getTracks().get(0).getInfo().title,  "", false);
-					nextMusic.addField("🌔  " + playlist.getTracks().get(1).getInfo().title, "", false);
-					nextMusic.addField("🌕  " + playlist.getTracks().get(2).getInfo().title,  "", false);
-					nextMusic.addField("🌖  " + playlist.getTracks().get(3).getInfo().title, "", false);
-					nextMusic.setColor(Color.CYAN);
-					long idMessage = msg.getChannel().sendMessage(nextMusic.build()).complete().getIdLong();
-					msg.getChannel().addReactionById(idMessage, "🌓").queue();
-					msg.getChannel().addReactionById(idMessage, "🌔").queue();
-					msg.getChannel().addReactionById(idMessage, "🌕").queue();
-					msg.getChannel().addReactionById(idMessage, "🌖").queue();
 					
+					EmbedBuilder nextMusic = new EmbedBuilder();
+						nextMusic.setColor(Color.CYAN);	
+						nextMusic.addField("🌓  " + playlist.getTracks().get(0).getInfo().title, "", false);
+						nextMusic.addField("🌔  " + playlist.getTracks().get(1).getInfo().title, "", false);
+						nextMusic.addField("🌕  " + playlist.getTracks().get(2).getInfo().title, "", false);
+						nextMusic.addField("🌖  " + playlist.getTracks().get(3).getInfo().title, "", false);
+						
+					
+					long idMessage = msg.getChannel().sendMessage(nextMusic.build()).complete().getIdLong();
+						msg.getChannel().addReactionById(idMessage, "🌓").queue();
+						msg.getChannel().addReactionById(idMessage, "🌔").queue();
+						msg.getChannel().addReactionById(idMessage, "🌕").queue();
+						msg.getChannel().addReactionById(idMessage, "🌖").queue();
+						
+						/*
+						 * Cria uma thread e espera que o usuario que solicitou a musica escolha a musica
+						 * se depois de 10 segundos sem escolher ele pega a primeira musica da lista
+						 */
 					new Thread() {
+						@SuppressWarnings("deprecation")
 						@Override
 						public void run() {
-							
-							Server a = STATICS.GUILDS.get(msg.getGuild());
-							a.setMusicOption(0);
-							SelectMusic musicSelector = new SelectMusic(a);
+							Server serverGuild = UTILS.GUILDS.get(msg.getGuild());
+							serverGuild.setMusicOption(0);
+							SelectMusic musicSelector = new SelectMusic(serverGuild);
 
 							for (int i = 0; i < 10000; i++) {
 								try {
 									TimeUnit.MILLISECONDS.sleep(1);
-									if (musicSelector.getValue(a) == 1) {
+									if (musicSelector.getValue(serverGuild) == 1) {
 										getManager(guild).queue(playlist.getTracks().get(0), author, msg);
 										msg.getChannel().sendMessage("Music selected: " + playlist.getTracks().get(0).getInfo().title).queue();
 										interrupt();
 										stop();
 										break;
-									} else if (musicSelector.getValue(a) == 2) {
+									} else if (musicSelector.getValue(serverGuild) == 2) {
 										getManager(guild).queue(playlist.getTracks().get(1), author, msg);
-										msg.getChannel().sendMessage("Music selected: " + playlist.getTracks().get(1).getInfo().title).queue();
+										msg.getChannel().sendMessage(
+												"Music selected: " + playlist.getTracks().get(1).getInfo().title)
+												.queue();
 										interrupt();
 										stop();
 										break;
-									} else if (musicSelector.getValue(a) == 3) {
+									} else if (musicSelector.getValue(serverGuild) == 3) {
 										getManager(guild).queue(playlist.getTracks().get(2), author, msg);
-										msg.getChannel().sendMessage("Music selected: " + playlist.getTracks().get(2).getInfo().title).queue();
+										msg.getChannel().sendMessage(
+												"Music selected: " + playlist.getTracks().get(2).getInfo().title)
+												.queue();
 										interrupt();
 										stop();
 										break;
-									} else if (musicSelector.getValue(a) == 4) {
+									} else if (musicSelector.getValue(serverGuild) == 4) {
 										getManager(guild).queue(playlist.getTracks().get(3), author, msg);
 										msg.getChannel().sendMessage("Music selected: " + playlist.getTracks().get(3).getInfo().title).queue();
 										interrupt();
@@ -155,7 +171,7 @@ public class MusicPlayerControl {
 					}.start();
 
 				}
-				
+
 				addNew.setColor(Color.GREEN);
 				msg.getChannel().sendMessage(addNew.build()).queue();
 			}
@@ -172,11 +188,13 @@ public class MusicPlayerControl {
 		});
 
 	}
-
+	
+	// Pula musica
 	private void skipMusic(Guild g) {
 		getPlayer(g).stopTrack();
 	}
 
+	// Converte o timestamp em tempo 00:00
 	private String getTimestamp(long milis) {
 		long seconds = milis / 1000;
 		long hours = Math.floorDiv(seconds, 3600);
@@ -186,6 +204,7 @@ public class MusicPlayerControl {
 		return (hours == 0 ? "" : hours + ":") + String.format("%02d", mins) + ":" + String.format("%02d", seconds);
 	}
 
+	// Comando para colocar uma musica
 	public void play(MessageReceivedEvent event, String music) {
 		guild = event.getGuild();
 		String input = music;
@@ -201,7 +220,8 @@ public class MusicPlayerControl {
 
 		event.getMessage().delete().queue();
 	}
-
+	
+	// Para o bot via comando
 	public void stop(MessageReceivedEvent event) {
 		Guild guildEvent = event.getGuild();
 
@@ -221,6 +241,7 @@ public class MusicPlayerControl {
 		event.getChannel().sendMessage(stopEmbed.build()).complete();
 	}
 
+	// Para o bot pelo emoji
 	public void stopEmote(MessageReactionAddEvent event) {
 		Guild guildEvent = event.getGuild();
 
@@ -241,11 +262,11 @@ public class MusicPlayerControl {
 
 	}
 
+	// Embaralha a playlist
 	public void shuffle(MessageReceivedEvent event) {
 		Guild guildEvent = event.getGuild();
 
-		if (isIdle(guildEvent))
-			return;
+		if (isIdle(guildEvent)) return;
 		getManager(guildEvent).shuffleQueue();
 
 		EmbedBuilder addNew = new EmbedBuilder();
@@ -255,7 +276,8 @@ public class MusicPlayerControl {
 		event.getChannel().sendMessage(addNew.build()).queue();
 
 	}
-
+	
+	// Exibe toda lista de musicas adicionadas
 	public void queue(MessageReceivedEvent event) {
 		Guild guildEvent = event.getGuild();
 
@@ -273,7 +295,7 @@ public class MusicPlayerControl {
 
 			queueList += (b + "." + audioInfo.getTrack().getInfo().title + "\n");
 			b++;
-			if (b == 20) {
+			if (b == 10) {
 				break;
 			}
 		}
@@ -284,7 +306,7 @@ public class MusicPlayerControl {
 		event.getChannel().sendMessage(queueInfo.build()).queue();
 
 	}
-
+	// Pula a musica atravez do comando !bb music skip
 	public void skip(MessageReceivedEvent event) {
 		Guild guildEvent = event.getGuild();
 
@@ -294,7 +316,7 @@ public class MusicPlayerControl {
 
 		skipMusic(guildEvent);
 	}
-
+	// Pula a musica atravez do emoji
 	public void skipEmote(MessageReactionAddEvent event) {
 		Guild guildEvent = event.getGuild();
 
@@ -305,7 +327,7 @@ public class MusicPlayerControl {
 		skipMusic(guildEvent);
 
 	}
-
+	// Exibe info da musica tocando via comando
 	public void info(MessageReceivedEvent event) {
 		Guild guildEvent = event.getGuild();
 
@@ -329,7 +351,7 @@ public class MusicPlayerControl {
 		event.getChannel().addReactionById(idMessage, "⏹").queue();
 		event.getChannel().addReactionById(idMessage, "⏩").queue();
 	}
-
+	// exibe info da musica tocando via emoji
 	public void infoEmote(MessageReactionAddEvent event) {
 		Guild guildEvent = event.getGuild();
 

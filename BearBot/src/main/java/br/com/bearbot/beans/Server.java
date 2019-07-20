@@ -1,10 +1,13 @@
 package br.com.bearbot.beans;
 
+import java.util.List;
+
 import net.dv8tion.jda.core.entities.Guild;
 
 public class Server {
 	private Guild guild;
 	private int musicOption;
+	private List<Long> messagesId;
 
 	public Guild getGuild() {
 		return guild;
@@ -21,5 +24,17 @@ public class Server {
 	public void setMusicOption(int musicOption) {
 		this.musicOption = musicOption;
 	}
+
+	public List<Long> getMessagesId() {
+		return messagesId;
+	}
+
+	public void setMessagesId(List<Long> messagesId) {
+		this.messagesId = messagesId;
+	}
+
+
+
+	
 
 }

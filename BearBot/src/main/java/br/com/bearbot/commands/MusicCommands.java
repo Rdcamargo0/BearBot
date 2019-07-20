@@ -37,9 +37,6 @@ public class MusicCommands {
 		if(args[2].equals("shuffle") && args.length >= 3)  musicController.shuffle(event);
 	
 		
-		
-		
-		
 	}
 
 }

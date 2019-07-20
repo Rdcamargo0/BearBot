@@ -15,6 +15,7 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
+import br.com.bearbot.utils.UTILS;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -90,7 +91,14 @@ public class TrackManager extends AudioEventAdapter {
 		msg.getChannel().addReactionById(idMessage, "ℹ").queue();
 		msg.getChannel().addReactionById(idMessage, "⏹").queue();
 		msg.getChannel().addReactionById(idMessage, "⏩").queue();
-
+		
+			
+		UTILS.GUILDS.get(msg.getGuild()).getMessagesId().add(idMessage);
+		
+	}
+	@Override
+	public void onPlayerPause(AudioPlayer player) {
+		super.onPlayerPause(player);
 	}
 
 	@Override
@@ -103,6 +111,8 @@ public class TrackManager extends AudioEventAdapter {
 		} else {
 			player.playTrack(queue.element().getTrack());
 		}
+		
+
 	}
 
 	private String getTimestamp(long milis) {
