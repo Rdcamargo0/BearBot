@@ -1,5 +1,5 @@
 # BearBot
-*VERSION ALPHA 2.0.0.6*<br />
+*VERSION ALPHA 2.0.0.5*<br />
 A bot for discord containing everything you see in need of a bot.
 
 ## IDE
@@ -38,4 +38,29 @@ public class CONFIGS {
     public static String TOKEN = "<Token here>";
     public static String PREFIX = "!bb";
 }
+```
+
+## SQL Scripts for create data base
+
+*Create table from guilds*
+```sql
+create table guildserver
+(
+    serverid varchar(200) not null
+        primary key
+);
+```
+
+*Create table from users*
+
+```sql
+create table users
+(
+    userid      varchar(200) not null,
+    serverid    varchar(200) not null,
+    msg_counter int(200)     not null,
+    primary key (userid, serverid),
+    constraint server_fk
+        foreign key (serverid) references guildserver (serverid)
+);
 ```
