@@ -1,6 +1,5 @@
 package br.com.bearbot.logs;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class OnReady extends ListenerAdapter {
 
 		for (Guild guild : guildsList) {
 			Server server = new Server();
-			server.setMessagesId(new ArrayList<Long>());
+			server.setMessagesId();
 			UTILS.GUILDS.put(guild, server);
 
 			VerifyExistenceDAO ver = new VerifyExistenceDAO();

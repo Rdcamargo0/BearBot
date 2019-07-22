@@ -1,5 +1,8 @@
 package br.com.bearbot.commands;
 
+import java.awt.Color;
+
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class ShareScreen {
@@ -10,6 +13,12 @@ public class ShareScreen {
 		String channelName = event.getMember().getVoiceState().getChannel().getName();
 		
 		String url = "http://discordapp.com/channels/" + idServer + "/" + idChannel;
+		
+		EmbedBuilder share = new EmbedBuilder();
+		share.setTitle("Share screen :: " + event.getMember().getVoiceState().getAudioChannel());
+		share.setColor(Color.MAGENTA);
+		share.addField("URL: " , url , true);
+		
 		
 		event.getChannel().sendMessage("Compartilhamento de tela correspondente ao canal de voz: ***" + channelName + "***").queue();
 		event.getChannel().sendMessage("URL to share screen: " + url).queue();

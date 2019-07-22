@@ -1,7 +1,5 @@
 package br.com.bearbot.events;
 
-import java.util.ArrayList;
-
 import br.com.bearbot.DAO.AddNewGuildDAO;
 import br.com.bearbot.beans.Server;
 import br.com.bearbot.utils.UTILS;
@@ -14,7 +12,7 @@ public class OnGuildJoinInNewServer extends ListenerAdapter {
 		System.out.println("Adicionando");
 		try {
 			Server server = new Server();
-			server.setMessagesId(new ArrayList<Long>());
+			server.setMessagesId();
 
 			UTILS.GUILDS.put(event.getGuild(), server);
 			new AddNewGuildDAO(event.getGuild().getIdLong());
