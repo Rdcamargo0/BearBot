@@ -11,9 +11,10 @@ public class MusicCommands {
 
 	public MusicCommands(MessageReceivedEvent event) {
 		if (event.getAuthor().isBot() || event.isFromType(ChannelType.PRIVATE)) return;
+		
 		if (event.getMember().getVoiceState().getAudioChannel() == null) {
 			EmbedBuilder nextMusic = new EmbedBuilder();
-			nextMusic.setTitle("Voce precisa estar em um canal de audio para usar este comando !");
+			nextMusic.setTitle("Voce precisa estar em um canal de audio para usar este comando!");
 			nextMusic.setColor(Color.RED);
 			event.getChannel().sendMessage(nextMusic.build()).queue();
 			return;
@@ -21,6 +22,8 @@ public class MusicCommands {
 		
 		String[] args = event.getMessage().getContentDisplay().split(" ");
 		String music = "";
+		
+		
 		
 		for (int i = 3; i < args.length; i++) music += " " + args[i];		
 		

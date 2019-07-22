@@ -81,21 +81,39 @@ public class TrackManager extends AudioEventAdapter {
 			info.getAuthor().getGuild().getAudioManager().openAudioConnection(vChan);
 		}
 
+		String THUMB = "https://img.youtube.com/vi/" + player.getPlayingTrack().getInfo().identifier +"/default.jpg";
+		
+		
 		EmbedBuilder nextMusic = new EmbedBuilder();
-		nextMusic.setTitle("🎶  Now playing :: " + player.getPlayingTrack().getInfo().title);
-		nextMusic.addField("Duration :: ", getTimestamp(player.getPlayingTrack().getDuration()), false);
-		nextMusic.setColor(Color.CYAN);
+		nextMusic.setTitle("🎶  Now playing ");
+		nextMusic.setThumbnail(THUMB);
+		nextMusic.setColor(Color.MAGENTA);
+		nextMusic.addField("Music name: ", "```" + player.getPlayingTrack().getInfo().title + "```" , false);
+		nextMusic.addField("Duration: " , "```" + getTimestamp(player.getPlayingTrack().getDuration()) + "```" , false);
+		nextMusic.addField("Author: " , "```" + player.getPlayingTrack().getInfo().author + "```" , false);
+		nextMusic.addField("Video link:" , "[Video here]("+player.getPlayingTrack().getInfo().uri+")" , false);
 
+		
+		
+		
 		long idMessage = msg.getChannel().sendMessage(nextMusic.build()).complete().getIdLong();
 		msg.getTextChannel().getManager().setTopic("🎶  Now playing :: " + player.getPlayingTrack().getInfo().title).queue();
 		msg.getChannel().addReactionById(idMessage, "ℹ").queue();
 		msg.getChannel().addReactionById(idMessage, "⏹").queue();
 		msg.getChannel().addReactionById(idMessage, "⏩").queue();
 		
-			
+		List<Long> listOfMessages = UTILS.GUILDS.get(msg.getGuild()).getMessagesId();
+		
+		for (Long long1 : listOfMessages) {
+			msg.getChannel().deleteMessageById(long1).queue();;
+			UTILS.GUILDS.get(msg.getGuild()).getMessagesId().remove(long1);
+		}
 		UTILS.GUILDS.get(msg.getGuild()).getMessagesId().add(idMessage);
 		
+		
 	}
+	
+	
 	@Override
 	public void onPlayerPause(AudioPlayer player) {
 		super.onPlayerPause(player);
@@ -112,7 +130,15 @@ public class TrackManager extends AudioEventAdapter {
 			player.playTrack(queue.element().getTrack());
 		}
 		
-
+		List<Long> listOfMessages = UTILS.GUILDS.get(msg.getGuild()).getMessagesId();
+		
+		for (Long long1 : listOfMessages) {
+			msg.getChannel().deleteMessageById(long1).queue();;
+			UTILS.GUILDS.get(msg.getGuild()).getMessagesId().remove(long1);
+		}
+		
+		
+		
 	}
 
 	private String getTimestamp(long milis) {

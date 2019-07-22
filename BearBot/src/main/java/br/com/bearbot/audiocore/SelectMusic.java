@@ -20,6 +20,9 @@ public class SelectMusic extends ListenerAdapter {
 
 	@Override
 	public void onMessageReactionAdd(MessageReactionAddEvent event) {
+		if(event.getUser().isBot() || event.getMember().getVoiceState().getAudioChannel() == null) return;
+		
+		
 		if (!(event.getMember().getUser().equals(event.getJDA().getSelfUser()))
 				&& event.getReactionEmote().getName().equals("🌓")) {
 			UTILS.GUILDS.get(event.getGuild()).setMusicOption(1);

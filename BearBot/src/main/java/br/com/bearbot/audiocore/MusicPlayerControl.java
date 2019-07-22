@@ -31,7 +31,7 @@ public class MusicPlayerControl {
 	private static final AudioPlayerManager MANAGER = new DefaultAudioPlayerManager();
 	private static final Map<Guild, Map.Entry<AudioPlayer, TrackManager>> PLAYERS = new HashMap<>();
 	private static Guild guild;
-	private boolean isPlaylist;
+	private boolean isLink;
 
 	public MusicPlayerControl() {
 		AudioSourceManagers.registerRemoteSources(MANAGER);
@@ -91,7 +91,7 @@ public class MusicPlayerControl {
 			public void playlistLoaded(final AudioPlaylist playlist) {
 				int musicsQnt = 0;
 				final EmbedBuilder addNew = new EmbedBuilder();
-				if (isPlaylist) {
+				if (isLink) {
 					for (int i = 0; i < (playlist.getTracks().size() > PLAYLIST_LIMIT ? PLAYLIST_LIMIT
 							: playlist.getTracks().size()); i++) {
 						getManager(guild).queue(playlist.getTracks().get(i), author, msg);
@@ -102,11 +102,14 @@ public class MusicPlayerControl {
 					musicsQnt = 1;
 					
 					EmbedBuilder nextMusic = new EmbedBuilder();
-						nextMusic.setColor(Color.CYAN);	
-						nextMusic.addField("🌓  " + playlist.getTracks().get(0).getInfo().title, "", false);
-						nextMusic.addField("🌔  " + playlist.getTracks().get(1).getInfo().title, "", false);
-						nextMusic.addField("🌕  " + playlist.getTracks().get(2).getInfo().title, "", false);
-						nextMusic.addField("🌖  " + playlist.getTracks().get(3).getInfo().title, "", false);
+						nextMusic.setColor(Color.YELLOW);
+						nextMusic.setTitle("Select music: ");
+						nextMusic.setDescription(
+								"🌓  " + playlist.getTracks().get(0).getInfo().title 
+								+ "\n🌔  " + playlist.getTracks().get(1).getInfo().title
+								+ "\n🌕  " + playlist.getTracks().get(2).getInfo().title
+								+ "\n🌖  " + playlist.getTracks().get(3).getInfo().title);
+						
 						
 					
 					long idMessage = msg.getChannel().sendMessage(nextMusic.build()).complete().getIdLong();
@@ -132,6 +135,9 @@ public class MusicPlayerControl {
 									TimeUnit.MILLISECONDS.sleep(1);
 									if (musicSelector.getValue(serverGuild) == 1) {
 										getManager(guild).queue(playlist.getTracks().get(0), author, msg);
+										
+										
+										
 										msg.getChannel().sendMessage("Music selected: " + playlist.getTracks().get(0).getInfo().title).queue();
 										interrupt();
 										stop();
@@ -211,10 +217,10 @@ public class MusicPlayerControl {
 
 		if (!(input.startsWith("http://") || input.startsWith("https://"))) {
 			input = "ytsearch: " + input;
-			this.isPlaylist = false;
+			this.isLink = false;
 			loadTrack(input, event.getMember(), event.getMessage());
 		} else {
-			this.isPlaylist = true;
+			this.isLink = true;
 			loadTrack(input, event.getMember(), event.getMessage());
 		}
 

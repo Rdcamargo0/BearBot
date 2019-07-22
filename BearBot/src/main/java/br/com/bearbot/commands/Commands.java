@@ -11,18 +11,22 @@ public class Commands extends ListenerAdapter {
 		if (event.isFromType(ChannelType.PRIVATE) || event.getAuthor().isBot()) return;
 
 		
-		if(event.getMessage().getContentDisplay().startsWith(UTILS.PREFIX)) {
-			System.out.printf("Command: %s ,|| SERVER: %s || USER: %s\n\n" ,event.getMessage().getContentDisplay() ,  event.getGuild().getName() , event.getAuthor().getName());
+		if(!(event.getMessage().getContentDisplay().startsWith(UTILS.PREFIX))) {
+			return;
+		} else {
+			System.out.printf("Command: %s <> SERVER: %s <> USER: %s\n\n" ,event.getMessage().getContentDisplay() ,  event.getGuild().getName() , event.getAuthor().getName());
 		}
 		
-		
+
 		String args[] = event.getMessage().getContentDisplay().toLowerCase().split(" ");
 		
 		
-		if (event.getMessage().getContentDisplay().startsWith(UTILS.PREFIX) && args[1].equals("help")) new CommandHelp(event);
-		if (event.getMessage().getContentDisplay().startsWith(UTILS.PREFIX) && args[1].equals("roll")) new CommandRoll(event);
-		if (event.getMessage().getContentDisplay().startsWith(UTILS.PREFIX) && args[1].equals("sharescreen")) new ShareScreen(event);
-		if (event.getMessage().getContentDisplay().startsWith(UTILS.PREFIX) && args[1].equals("rank")) new CommandRank(event);
-		if (event.getMessage().getContentDisplay().startsWith(UTILS.PREFIX) && args[1].equals("music")) new MusicCommands(event);
+		if (args[1].equals("help")) new CommandHelp(event);
+		if (args[1].equals("roll")) new CommandRoll(event);
+		if (args[1].equals("sharescreen")) new ShareScreen(event);
+		if (args[1].equals("rank")) new CommandRank(event);
+		if (args[1].equals("music")) new MusicCommands(event);
+		if (args[1].equals("clear")) new ClearCommand(event);
 	}
+	
 }

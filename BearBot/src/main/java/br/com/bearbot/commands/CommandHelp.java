@@ -12,6 +12,8 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class CommandHelp {
 	public CommandHelp(MessageReceivedEvent event) {
+		if (event.isFromType(ChannelType.PRIVATE) && !event.getAuthor().isBot()) return;
+		
 		EmbedBuilder configHelp = new EmbedBuilder();
 		
 		configHelp.setTitle("All commands", null);
@@ -27,14 +29,14 @@ public class CommandHelp {
 		configHelp.addField("***MUSIC QUEUE***", "!bb music queue **To view music queue**", false);
 		
 		
-		if (event.isFromType(ChannelType.PRIVATE) && !event.getAuthor().isBot()) return;
+		
 
 		event.getChannel().sendMessage("👽 Enviado para seu privado").queue();
 		
 		sendPrivateMessage(event.getAuthor() , configHelp.build());
 	}
 
-	public void sendPrivateMessage(User user, final MessageEmbed messageEmbed) {
+	private void sendPrivateMessage(User user, final MessageEmbed messageEmbed) {
 		user.openPrivateChannel().queue(new Consumer<PrivateChannel>() {
 			public void accept(PrivateChannel channel) {
 				channel.sendMessage(messageEmbed).queue();

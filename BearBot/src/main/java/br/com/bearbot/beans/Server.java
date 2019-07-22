@@ -1,5 +1,6 @@
 package br.com.bearbot.beans;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.dv8tion.jda.core.entities.Guild;
@@ -29,8 +30,8 @@ public class Server {
 		return messagesId;
 	}
 
-	public void setMessagesId(List<Long> messagesId) {
-		this.messagesId = messagesId;
+	public void setMessagesId() {
+		this.messagesId = new ArrayList<Long>();
 	}
 
 
