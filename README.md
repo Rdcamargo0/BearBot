@@ -1,5 +1,5 @@
 # BearBot
-*VERSION ALPHA 2.0.0.5*<br />
+*VERSION ALPHA 3.0.0.0*<br />
 A bot for discord containing everything you see in need of a bot.
 
 ## IDE
