@@ -126,41 +126,50 @@ public class MusicPlayerControl {
 						@SuppressWarnings("deprecation")
 						@Override
 						public void run() {
+							final Message message = msg;
 							Server serverGuild = UTILS.GUILDS.get(msg.getGuild());
 							serverGuild.setMusicOption(0);
 							SelectMusic musicSelector = new SelectMusic(serverGuild);
-
+							EmbedBuilder selectedMessage = new EmbedBuilder();
+							selectedMessage.setColor(Color.RED);
 							for (int i = 0; i < 10000; i++) {
 								try {
 									TimeUnit.MILLISECONDS.sleep(1);
 									if (musicSelector.getValue(serverGuild) == 1) {
 										getManager(guild).queue(playlist.getTracks().get(0), author, msg);
-										
-										
-										
-										msg.getChannel().sendMessage("Music selected: " + playlist.getTracks().get(0).getInfo().title).queue();
+										selectedMessage.addField("Music selected" , "```"+playlist.getTracks().get(0).getInfo().title+"```" , false);
+										selectedMessage.addField("Who selected" , message.getAuthor().getAsMention() , false);
+										long id = message.getChannel().sendMessage(selectedMessage.build()).complete().getIdLong();	
+										UTILS.GUILDS.get(message.getGuild()).getMessagesId().add(id);
+										System.out.println(id);
 										interrupt();
 										stop();
 										break;
 									} else if (musicSelector.getValue(serverGuild) == 2) {
 										getManager(guild).queue(playlist.getTracks().get(1), author, msg);
-										msg.getChannel().sendMessage(
-												"Music selected: " + playlist.getTracks().get(1).getInfo().title)
-												.queue();
+										selectedMessage.addField("Music selected" , "```"+playlist.getTracks().get(1).getInfo().title+"```" , false);
+										selectedMessage.addField("Who selected" , message.getAuthor().getAsMention() , false);
+										long id = message.getChannel().sendMessage(selectedMessage.build()).complete().getIdLong();	
+										UTILS.GUILDS.get(message.getGuild()).getMessagesId().add(id);
 										interrupt();
 										stop();
 										break;
 									} else if (musicSelector.getValue(serverGuild) == 3) {
 										getManager(guild).queue(playlist.getTracks().get(2), author, msg);
-										msg.getChannel().sendMessage(
-												"Music selected: " + playlist.getTracks().get(2).getInfo().title)
-												.queue();
+										selectedMessage.addField("Music selected" , "```"+playlist.getTracks().get(2).getInfo().title+"```" , false);
+										selectedMessage.addField("Who selected" , message.getAuthor().getAsMention() , false);
+										long id = message.getChannel().sendMessage(selectedMessage.build()).complete().getIdLong();	
+										UTILS.GUILDS.get(message.getGuild()).getMessagesId().add(id);
 										interrupt();
 										stop();
 										break;
 									} else if (musicSelector.getValue(serverGuild) == 4) {
 										getManager(guild).queue(playlist.getTracks().get(3), author, msg);
-										msg.getChannel().sendMessage("Music selected: " + playlist.getTracks().get(3).getInfo().title).queue();
+										selectedMessage.addField("Music selected" , "```"+playlist.getTracks().get(3).getInfo().title+"```" , false);
+										selectedMessage.addField("Who selected" , message.getAuthor().getAsMention() , false);
+										long id = message.getChannel().sendMessage(selectedMessage.build()).complete().getIdLong();
+										UTILS.GUILDS.get(message.getGuild()).getMessagesId().add(id);
+										
 										interrupt();
 										stop();
 										break;

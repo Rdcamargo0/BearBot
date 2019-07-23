@@ -10,9 +10,7 @@ public class MusicControl extends ListenerAdapter {
 		if (event.getUser().isBot()) return;
 
 		if (event.getMember().getVoiceState().getAudioChannel() == null) {
-			event.getChannel().sendMessage(
-					event.getMember().getAsMention() + " ❌ Para usar o controlador de musica se conecte ao canal!!")
-					.queue();
+			System.out.println(event.getMember().getUser().getName());
 			return;
 		}
 
