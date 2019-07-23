@@ -101,28 +101,15 @@ public class TrackManager extends AudioEventAdapter {
 		msg.getChannel().addReactionById(idMessage, "ℹ").queue();
 		msg.getChannel().addReactionById(idMessage, "⏹").queue();
 		msg.getChannel().addReactionById(idMessage, "⏩").queue();
-		
-		List<Long> listOfMessages = UTILS.GUILDS.get(msg.getGuild()).getMessagesId();
-		
-		for (Long long1 : listOfMessages) {
-			msg.getChannel().deleteMessageById(long1).queue();;
-			UTILS.GUILDS.get(msg.getGuild()).getMessagesId().remove(long1);
-		}
+
 		UTILS.GUILDS.get(msg.getGuild()).getMessagesId().add(idMessage);
 		
 		
-	}
-	
-	
-	@Override
-	public void onPlayerPause(AudioPlayer player) {
-		super.onPlayerPause(player);
 	}
 
 	@Override
 	public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
 		Guild g = queue.poll().getAuthor().getGuild();
-		
 		if (queue.isEmpty()) {
 			msg.getTextChannel().getManager().setTopic("").queue();
 			g.getAudioManager().closeAudioConnection();
@@ -133,7 +120,7 @@ public class TrackManager extends AudioEventAdapter {
 		List<Long> listOfMessages = UTILS.GUILDS.get(msg.getGuild()).getMessagesId();
 		
 		for (Long long1 : listOfMessages) {
-			msg.getChannel().deleteMessageById(long1).queue();;
+			msg.getChannel().deleteMessageById(long1).queue();
 			UTILS.GUILDS.get(msg.getGuild()).getMessagesId().remove(long1);
 		}
 		
