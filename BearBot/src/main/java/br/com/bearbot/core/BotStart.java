@@ -1,9 +1,8 @@
 package br.com.bearbot.core;
 
-import br.com.bearbot.audiocore.MusicControl;
+import br.com.bearbot.admincommands.PrivateConfigurations;
 import br.com.bearbot.audiocore.SelectMusic;
 import br.com.bearbot.commands.Commands;
-import br.com.bearbot.commands.PrivateConfigurations;
 import br.com.bearbot.events.OnGuildJoinInNewServer;
 import br.com.bearbot.events.OnUserEnter;
 import br.com.bearbot.levelsystem.LevelUpNotification;
@@ -22,7 +21,7 @@ public class BotStart {
 	public static void main(String[] args) throws Exception {
 		bot = new JDABuilder(UTILS.TOKEN).build();
 		bot.getPresence().setStatus(OnlineStatus.DO_NOT_DISTURB);
-		bot.getPresence().setGame(Game.of(GameType.STREAMING, "!bb help", "https://www.twitch.tv/1Urso"));
+		bot.getPresence().setGame(Game.of(GameType.STREAMING, ".help", "https://www.twitch.tv/1Urso"));
 		
 		bot.addEventListener(new OnReady());
 		bot.addEventListener(new PrivateConfigurations());
@@ -30,7 +29,6 @@ public class BotStart {
 		bot.addEventListener(new LevelUpNotification());
 		bot.addEventListener(new OnGuildJoinInNewServer());
 		bot.addEventListener(new MessagesCounter());
-		bot.addEventListener(new MusicControl());
 		bot.addEventListener(new OnUserEnter());
 		bot.addEventListener(new SelectMusic());
 	}

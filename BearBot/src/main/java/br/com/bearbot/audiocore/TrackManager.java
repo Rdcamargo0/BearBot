@@ -15,7 +15,6 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
-import br.com.bearbot.utils.UTILS;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
@@ -81,30 +80,21 @@ public class TrackManager extends AudioEventAdapter {
 			info.getAuthor().getGuild().getAudioManager().openAudioConnection(vChan);
 		}
 
-		String THUMB = "https://img.youtube.com/vi/" + player.getPlayingTrack().getInfo().identifier +"/default.jpg";
-		
-		
+		String THUMB = "https://img.youtube.com/vi/" + player.getPlayingTrack().getInfo().identifier + "/default.jpg";
+
 		EmbedBuilder nextMusic = new EmbedBuilder();
 		nextMusic.setTitle("🎶  Now playing ");
 		nextMusic.setThumbnail(THUMB);
 		nextMusic.setColor(Color.MAGENTA);
-		nextMusic.addField("Music name: ", "```" + player.getPlayingTrack().getInfo().title + "```" , false);
-		nextMusic.addField("Duration: " , "```" + getTimestamp(player.getPlayingTrack().getDuration()) + "```" , false);
-		nextMusic.addField("Author: " , "```" + player.getPlayingTrack().getInfo().author + "```" , false);
-		nextMusic.addField("Video link:" , "[Video here]("+player.getPlayingTrack().getInfo().uri+")" , false);
+		nextMusic.addField("Music name: ", "```" + player.getPlayingTrack().getInfo().title + "```", false);
+		nextMusic.addField("Duration: ", "```" + getTimestamp(player.getPlayingTrack().getDuration()) + "```", false);
+		nextMusic.addField("Author: ", "```" + player.getPlayingTrack().getInfo().author + "```", false);
+		nextMusic.addField("Video link:", "[Video here](" + player.getPlayingTrack().getInfo().uri + ")", false);
 
-		
-		
-		
-		long idMessage = msg.getChannel().sendMessage(nextMusic.build()).complete().getIdLong();
+		msg.getChannel().sendMessage(nextMusic.build()).queue();
 		msg.getTextChannel().getManager().setTopic("🎶  Now playing :: " + player.getPlayingTrack().getInfo().title).queue();
-		msg.getChannel().addReactionById(idMessage, "ℹ").queue();
-		msg.getChannel().addReactionById(idMessage, "⏹").queue();
-		msg.getChannel().addReactionById(idMessage, "⏩").queue();
 
-		UTILS.GUILDS.get(msg.getGuild()).getMessagesId().add(idMessage);
-		
-		
+
 	}
 
 	@Override
@@ -116,16 +106,7 @@ public class TrackManager extends AudioEventAdapter {
 		} else {
 			player.playTrack(queue.element().getTrack());
 		}
-		
-		List<Long> listOfMessages = UTILS.GUILDS.get(msg.getGuild()).getMessagesId();
-		
-		for (Long long1 : listOfMessages) {
-			msg.getChannel().deleteMessageById(long1).queue();
-			UTILS.GUILDS.get(msg.getGuild()).getMessagesId().remove(long1);
-		}
-		
-		
-		
+
 	}
 
 	private String getTimestamp(long milis) {

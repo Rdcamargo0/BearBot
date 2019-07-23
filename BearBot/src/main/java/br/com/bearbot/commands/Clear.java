@@ -5,13 +5,13 @@ import java.util.List;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class ClearCommand {
-	public ClearCommand(MessageReceivedEvent event) {
+public class Clear {
+	public Clear(MessageReceivedEvent event) {
 		if(event.getAuthor().isBot()) return;
 				
 		String args[] = event.getMessage().getContentDisplay().split(" ");
 			
-		int qnt = Integer.parseInt(args[2]);
+		int qnt = Integer.parseInt(args[1]);
 		
 		if(qnt > 100) {
 			event.getChannel().sendMessage("🔴 Limite maximo: 100").queue();

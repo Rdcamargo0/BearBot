@@ -7,9 +7,9 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class MusicCommands {
+public class Music {
 
-	public MusicCommands(MessageReceivedEvent event) {
+	public Music(MessageReceivedEvent event) {
 		if (event.getAuthor().isBot() || event.isFromType(ChannelType.PRIVATE)) return;
 		
 		if (event.getMember().getVoiceState().getAudioChannel() == null) {
@@ -38,6 +38,11 @@ public class MusicCommands {
 		if(args[2].equals("list1") && args.length >= 3)  musicController.play(event, "https://www.youtube.com/watch?v=Pkh8UtuejGw&list=PLx0sYbCqOb8TBPRdmBHs5Iftvv9TPboYG");
 		if(args[2].equals("stop") && args.length >= 3)  musicController.stop(event);
 		if(args[2].equals("shuffle") && args.length >= 3)  musicController.shuffle(event);
+		
+		
+		
+		
+		
 	
 		
 	}
