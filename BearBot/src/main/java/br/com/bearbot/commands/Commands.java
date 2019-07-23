@@ -12,16 +12,18 @@ public class Commands extends ListenerAdapter {
 		
 
 		String args[] = event.getMessage().getContentDisplay().toLowerCase().split(" ");
+		String musicArgs[] = event.getMessage().getContentDisplay().split(" ");
 		
-		String music = null;
+		String music = "";
 		
 		try {
-			for (int i = 1; i < args.length; i++) music += " " + args[i];
+			for (int i = 1; i < musicArgs.length; i++) music += " " + musicArgs[i];
 			music = music.trim();
 		} catch (Exception e) {
 			
 		}		
 		
+		System.out.println(music);
 		
 		MusicPlayerControl musicController = new MusicPlayerControl();
 		
@@ -30,7 +32,7 @@ public class Commands extends ListenerAdapter {
 		if (args[0].equals(".sharescreen")) new ShareScreen(event);
 		if (args[0].equals(".rank")) new Rank(event);
 		if (args[0].equals(".clear")) new Clear(event);
-		if (args[0].equals(".play") || args[0].equals(".p")) musicController.play(event, music);
+		if (args[0].equals(".play") || args[0].equals(".p")) musicController.play(event, music.trim());
 		if (args[0].equals(".skip") || args[0].equals(".s")) musicController.skip(event);
 		if (args[0].equals(".info") || args[0].equals(".now")) musicController.info(event);
 		if (args[0].equals(".queue") || args[0].equals(".q")) musicController.queue(event);
