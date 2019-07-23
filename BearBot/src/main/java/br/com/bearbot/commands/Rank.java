@@ -7,9 +7,9 @@ import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class CommandRank {
+public class Rank {
 
-	public CommandRank(MessageReceivedEvent event) {
+	public Rank(MessageReceivedEvent event) {
 		if (event.getAuthor().isBot() || event.isFromType(ChannelType.PRIVATE)) return;
 		
 		

@@ -10,8 +10,8 @@ import net.dv8tion.jda.core.entities.PrivateChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-public class CommandHelp {
-	public CommandHelp(MessageReceivedEvent event) {
+public class Help {
+	public Help(MessageReceivedEvent event) {
 		if (event.isFromType(ChannelType.PRIVATE) && !event.getAuthor().isBot()) return;
 		
 		EmbedBuilder configHelp = new EmbedBuilder();

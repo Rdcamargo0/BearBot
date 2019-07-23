@@ -139,9 +139,8 @@ public class MusicPlayerControl {
 										getManager(guild).queue(playlist.getTracks().get(0), author, msg);
 										selectedMessage.addField("Music selected" , "```"+playlist.getTracks().get(0).getInfo().title+"```" , false);
 										selectedMessage.addField("Who selected" , message.getAuthor().getAsMention() , false);
-										long id = message.getChannel().sendMessage(selectedMessage.build()).complete().getIdLong();	
-										UTILS.GUILDS.get(message.getGuild()).getMessagesId().add(id);
-										System.out.println(id);
+										message.getChannel().sendMessage(selectedMessage.build()).queue();		
+										
 										interrupt();
 										stop();
 										break;
@@ -149,8 +148,8 @@ public class MusicPlayerControl {
 										getManager(guild).queue(playlist.getTracks().get(1), author, msg);
 										selectedMessage.addField("Music selected" , "```"+playlist.getTracks().get(1).getInfo().title+"```" , false);
 										selectedMessage.addField("Who selected" , message.getAuthor().getAsMention() , false);
-										long id = message.getChannel().sendMessage(selectedMessage.build()).complete().getIdLong();	
-										UTILS.GUILDS.get(message.getGuild()).getMessagesId().add(id);
+										message.getChannel().sendMessage(selectedMessage.build()).queue();	
+										
 										interrupt();
 										stop();
 										break;
@@ -158,8 +157,8 @@ public class MusicPlayerControl {
 										getManager(guild).queue(playlist.getTracks().get(2), author, msg);
 										selectedMessage.addField("Music selected" , "```"+playlist.getTracks().get(2).getInfo().title+"```" , false);
 										selectedMessage.addField("Who selected" , message.getAuthor().getAsMention() , false);
-										long id = message.getChannel().sendMessage(selectedMessage.build()).complete().getIdLong();	
-										UTILS.GUILDS.get(message.getGuild()).getMessagesId().add(id);
+										message.getChannel().sendMessage(selectedMessage.build()).queue();	
+										
 										interrupt();
 										stop();
 										break;
@@ -167,8 +166,7 @@ public class MusicPlayerControl {
 										getManager(guild).queue(playlist.getTracks().get(3), author, msg);
 										selectedMessage.addField("Music selected" , "```"+playlist.getTracks().get(3).getInfo().title+"```" , false);
 										selectedMessage.addField("Who selected" , message.getAuthor().getAsMention() , false);
-										long id = message.getChannel().sendMessage(selectedMessage.build()).complete().getIdLong();
-										UTILS.GUILDS.get(message.getGuild()).getMessagesId().add(id);
+										message.getChannel().sendMessage(selectedMessage.build()).queue();	
 										
 										interrupt();
 										stop();
@@ -256,26 +254,6 @@ public class MusicPlayerControl {
 		event.getChannel().sendMessage(stopEmbed.build()).complete();
 	}
 
-	// Para o bot pelo emoji
-	public void stopEmote(MessageReactionAddEvent event) {
-		Guild guildEvent = event.getGuild();
-
-		if (isIdle(guildEvent))
-			return;
-
-		getManager(guildEvent).purgeQueue();
-
-		skipMusic(guildEvent);
-		guildEvent.getAudioManager().closeAudioConnection();
-
-		EmbedBuilder stopEmbed = new EmbedBuilder();
-
-		stopEmbed.setTitle("🛑🛑 O bot foi parado !");
-		stopEmbed.setColor(Color.RED);
-		event.getTextChannel().getManager().setTopic("").queue();
-		event.getChannel().sendMessage(stopEmbed.build()).complete();
-
-	}
 
 	// Embaralha a playlist
 	public void shuffle(MessageReceivedEvent event) {
@@ -332,16 +310,7 @@ public class MusicPlayerControl {
 		skipMusic(guildEvent);
 	}
 	// Pula a musica atravez do emoji
-	public void skipEmote(MessageReactionAddEvent event) {
-		Guild guildEvent = event.getGuild();
 
-		if (isIdle(guildEvent)) {
-			return;
-		}
-
-		skipMusic(guildEvent);
-
-	}
 	// Exibe info da musica tocando via comando
 	public void info(MessageReceivedEvent event) {
 		Guild guildEvent = event.getGuild();
@@ -366,30 +335,6 @@ public class MusicPlayerControl {
 		event.getChannel().addReactionById(idMessage, "⏹").queue();
 		event.getChannel().addReactionById(idMessage, "⏩").queue();
 	}
-	// exibe info da musica tocando via emoji
-	public void infoEmote(MessageReactionAddEvent event) {
-		Guild guildEvent = event.getGuild();
 
-		if (isIdle(guildEvent)) {
-			System.out.println("Nao ta tocando nada man");
-			return;
-		}
-
-		AudioTrack track = getPlayer(guildEvent).getPlayingTrack();
-		AudioTrackInfo info = track.getInfo();
-
-		EmbedBuilder infoEmbed = new EmbedBuilder().setDescription("**CURRENT TRACK INFO:**");
-		infoEmbed.addField("Title", info.title, false);
-		infoEmbed.addField("Duration",
-				"`[ " + getTimestamp(track.getPosition()) + "/ " + getTimestamp(track.getDuration()) + " ]`", false);
-		infoEmbed.addField("Author", info.author, false).build();
-		infoEmbed.setColor(Color.YELLOW);
-
-		long idMessage = event.getTextChannel().sendMessage(infoEmbed.build()).complete().getIdLong();
-		event.getChannel().addReactionById(idMessage, "ℹ").queue();
-		event.getChannel().addReactionById(idMessage, "⏹").queue();
-		event.getChannel().addReactionById(idMessage, "⏩").queue();
-
-	}
 
 }
