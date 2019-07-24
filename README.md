@@ -1,5 +1,5 @@
 # BearBot
-*VERSION 4.1.0.1*<br />
+*VERSION 4.1.1.0*<br />
 A bot for discord containing everything you see in need of a bot.
 
 ## IDE
