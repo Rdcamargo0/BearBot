@@ -10,7 +10,9 @@ public class Roll {
 		String args[] = event.getMessage().getContentDisplay().split(" ");
 		
 		try {
+
 			int rollNumber = Integer.parseInt(args[1]);
+
 
 			Random rollRandomNumber = new Random();
 			
