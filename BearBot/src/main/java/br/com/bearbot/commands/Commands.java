@@ -23,8 +23,6 @@ public class Commands extends ListenerAdapter {
 			
 		}		
 		
-		System.out.println(music);
-		
 		MusicPlayerControl musicController = new MusicPlayerControl();
 		
 		if (args[0].equals(".help")) new Help(event);
@@ -36,10 +34,13 @@ public class Commands extends ListenerAdapter {
 		if (args[0].equals(".skip") || args[0].equals(".s")) musicController.skip(event);
 		if (args[0].equals(".info") || args[0].equals(".now")) musicController.info(event);
 		if (args[0].equals(".queue") || args[0].equals(".q")) musicController.queue(event);
+		if (args[0].equals(".stop"))  musicController.stop(event);
+		if (args[0].equals(".shuffle"))  musicController.shuffle(event);	
+		if (args[0].equals(".ping")) new Ping(event);
+		
 		if (args[0].equals(".monstercat") || args[0].equals(".mc")) musicController.play(event, "https://www.twitch.tv/monstercat");
 		if (args[0].equals(".list1"))  musicController.play(event, "https://www.youtube.com/watch?v=Pkh8UtuejGw&list=PLx0sYbCqOb8TBPRdmBHs5Iftvv9TPboYG");
-		if (args[0].equals(".stop"))  musicController.stop(event);
-		if (args[0].equals(".shuffle"))  musicController.shuffle(event);		
+			
 		
 	}
 	

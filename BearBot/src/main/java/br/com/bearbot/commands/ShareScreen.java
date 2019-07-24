@@ -11,17 +11,22 @@ public class ShareScreen {
 		String idServer = event.getGuild().getId();
 		String idChannel = event.getMember().getVoiceState().getChannel().getId();
 		String channelName = event.getMember().getVoiceState().getChannel().getName();
-		
+
 		String url = "http://discordapp.com/channels/" + idServer + "/" + idChannel;
-		
+
 		EmbedBuilder share = new EmbedBuilder();
 		share.setTitle("Share screen :: " + event.getMember().getVoiceState().getAudioChannel());
 		share.setColor(Color.MAGENTA);
-		share.addField("URL: " , url , true);
-		
-		
-		event.getChannel().sendMessage("Compartilhamento de tela correspondente ao canal de voz: ***" + channelName + "***").queue();
-		event.getChannel().sendMessage("URL to share screen: " + url).queue();
+		share.addField("URL: ", url, true);
+
+		EmbedBuilder sharescreen = new EmbedBuilder();
+		sharescreen.setTitle("ShareScreen ", event.getGuild().getIconUrl());
+		sharescreen.setColor(Color.RED);
+		sharescreen.setDescription("Voice channel: " + channelName);
+		sharescreen.addField("Para entrar no compartilhamente", "[Click here](" + url + ")", false);
+		sharescreen.setFooter(event.getGuild().getName(), event.getGuild().getIconUrl());
+
+		event.getChannel().sendMessage(sharescreen.build()).queue();
 	}
 
 }

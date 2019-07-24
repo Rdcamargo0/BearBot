@@ -6,6 +6,7 @@ import java.sql.SQLException;
 
 public class VerifyExistenceDAO {
 	public boolean checkExistence(long guildId) {
+		boolean isChecked = false;
 		ConnectionDAO connection = new ConnectionDAO();
 
 		try {
@@ -23,12 +24,13 @@ public class VerifyExistenceDAO {
 			ResultSet results = sets.executeQuery();
 
 			while (results.next()) {
-				return true;
+				isChecked = true;
 			}
+			
 			connection.disconnect();
 		} catch (Exception e) {
 		}
 
-		return false;
+		return isChecked;
 	}
 }

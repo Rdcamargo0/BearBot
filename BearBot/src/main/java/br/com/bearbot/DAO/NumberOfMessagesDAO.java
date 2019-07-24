@@ -29,8 +29,6 @@ public class NumberOfMessagesDAO {
 			}
 			
 			
-			
-			
 		} catch (Exception e) {
 		}
 

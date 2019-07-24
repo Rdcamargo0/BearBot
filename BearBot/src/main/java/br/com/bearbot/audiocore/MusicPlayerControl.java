@@ -24,7 +24,6 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 
 public class MusicPlayerControl {
 	private static final int PLAYLIST_LIMIT = 1000;
@@ -325,8 +324,7 @@ public class MusicPlayerControl {
 
 		EmbedBuilder infoEmbed = new EmbedBuilder().setDescription("**CURRENT TRACK INFO:**");
 		infoEmbed.addField("Title", info.title, false);
-		infoEmbed.addField("Duration",
-				"`[ " + getTimestamp(track.getPosition()) + "/ " + getTimestamp(track.getDuration()) + " ]`", false);
+		infoEmbed.addField("Duration","`[ " + getTimestamp(track.getPosition()) + "/ " + getTimestamp(track.getDuration()) + " ]`", false);
 		infoEmbed.addField("Author", info.author, false).build();
 		infoEmbed.setColor(Color.YELLOW);
 

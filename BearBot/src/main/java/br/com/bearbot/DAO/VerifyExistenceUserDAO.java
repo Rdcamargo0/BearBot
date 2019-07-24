@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class VerifyExistenceUserDAO {
 	public boolean CheckExistenceUserDAO(long guildId , long userID) {
 		ConnectionDAO connection = new ConnectionDAO();
-
+		boolean isChecked= false;
 		try {
 			connection.connect();
 		} catch (ClassNotFoundException e) {
@@ -23,13 +23,13 @@ public class VerifyExistenceUserDAO {
 			ResultSet results = sets.executeQuery();
 
 			while (results.next()) {
-				return true;
+				isChecked = true;
 			}
 			connection.disconnect();
 
 		} catch (Exception e) {
 		}
 		
-		return false;
+		return isChecked;
 	}
 }
